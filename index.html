@@ -22,6 +22,7 @@
             const response = await fetch('./SiriusToken.json');
             const data = await response.json();
             const contractABI = data.abi;
+            alert("Deu certo: " + contractABI);
     
             let signer;
             let contract;
@@ -60,5 +61,6 @@
     </body>
 
 </html>
+
 
 
