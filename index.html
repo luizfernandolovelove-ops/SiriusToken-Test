@@ -15,7 +15,49 @@
         <input type="text" id="toWhom" placeholder="Endereço do destinatário">
         <input type="number" id="amount" placeholder="Quantidade">
         <button id="transferButton">Transferir</button>
+        
+        <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
+        <script>
+            const contractAddress = "SEU_ENDERECO_DO_CONTRATO_AQUI";
+            const response = await fetch('./SiriusToken.json');
+            const data = await response.json();
+            const contractABI = data.abi;
+    
+            let signer;
+            let contract;
 
+            async function connect() {
+                if (window.ethereum) {
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    const provider = new ethers.providers.Web3Provider(window.ethereum);
+                    signer = provider.getSigner();
+                    const address = await signer.getAddress();
+                    document.getElementById('accountArea').innerText = "Conectado: " + address;
+                    
+                    contract = new ethers.Contract(contractAddress, contractABI, signer);
+                } else {
+                    alert("É necessário instalar o MetaMask!");
+                }
+            }
+
+            async function transfer() {
+                const to = document.getElementById('toWhom').value;
+                const amount = document.getElementById('amount').value;
+                try {
+                    const tx = await contract.transferTo(to, amount);
+                    alert("Hash da transação (ENVIADA): " + tx.hash);
+                    await tx.wait();
+                    alert("Transferência CONFIRMADA!");
+                } catch (err) {
+                    console.error(err);
+                    alert("Erro na transação.");
+                }
+            }
+    
+            document.getElementById('connectButton').onclick = connect;
+            document.getElementById('transferButton').onclick = transfer;
+        </script>
     </body>
 
 </html>
+
