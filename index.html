@@ -19,13 +19,21 @@
         <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
         <script>
             const contractAddress = "0x931a72e850a262ce5774e527905A79987b920bE4";
-            const response = await fetch('./SiriusToken.json');
-            const data = await response.json();
-            const contractABI = data.abi;
-            alert("Deu certo: " + contractABI);
-    
+
+            let contractABI;
             let signer;
             let contract;
+
+            async function loadABI() {
+                try {
+                    const response = await fetch('./SiriusToken.json');
+                    const data = await response.json();
+                    contractABI = data.abi;
+                    console.log("ABI carregado com sucesso");
+                } catch (err) {
+                    console.error("Erro ao carregar o arquivo JSON: ", err);
+                }
+            }
 
             async function connect() {
                 if (window.ethereum) {
@@ -61,6 +69,7 @@
     </body>
 
 </html>
+
 
 
 
